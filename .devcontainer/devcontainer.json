@@ -1,0 +1,85 @@
+// ref. https://github.com/Microsoft/vscode-remote-try-python
+{
+  "name": "Python Repository Simple",
+  // Use docker-compose.extend.yml to run a command that keeps the container running.
+  "dockerComposeFile": ["./compose.yaml"],
+  "service": "app",
+  "workspaceFolder": "/project",
+  "shutdownAction": "stopCompose",
+  // Comment out the next line to run as root instead. Linux users,
+  // update Dockerfile with your user's UID/GID if not 1000.
+  "remoteUser": "vscode",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "chat.detectParticipant.enabled": true,
+        "files.eol": "\n",
+        "files.exclude": {
+          "**/.git": true,
+          "**/.DS_Store": true,
+          "**/Thumbs.db": true,
+          "**/__pycache__": true,
+          ".pytest_cache": true,
+          ".coverage": true,
+          ".ruff_cache": true,
+          ".venv": true
+        },
+        "files.insertFinalNewline": true,
+        "files.trimTrailingWhitespace": true,
+        "terminal.integrated.profiles.linux": {
+          "bash": {
+            "path": "/bin/bash"
+          }
+        },
+        "python.defaultInterpreterPath": "/project/.venv/bin/python",
+        "python.testing.pytestEnabled": true,
+        "python.analysis.diagnosticMode": "workspace",
+        "python.analysis.inlayHints.callArgumentNames": "all",
+        "python.analysis.inlayHints.variableTypes": true,
+        "python.analysis.inlayHints.functionReturnTypes": true,
+        "python.languageServer": "Pylance",
+        "python.analysis.typeCheckingMode": "basic",
+        // ruff.pathを指定することでVS Code拡張にバンドルされているruffではなくuvのruffを使用する
+        "ruff.path": ["/home/vscode/.local/share/uv/tools/ruff/bin/ruff"],
+        "vsintellicode.python.completionsEnabled": true,
+        "vsintellicode.features.python.deepLearning": "enabled",
+        "vsintellicode.modify.editor.suggestSelection": "enabled",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.organizeImports": "never",
+          "source.fixAll": "explicit"
+        },
+        "[python]": {
+          "editor.tabSize": 4,
+          "editor.formatOnPaste": false,
+          "editor.defaultFormatter": "charliermarsh.ruff"
+        },
+        "[json]": {
+          "editor.tabSize": 2
+        },
+        "[yaml]": {
+          "editor.tabSize": 2
+        },
+        "autoDocstring.docstringFormat": "numpy",
+        "autoDocstring.startOnNewLine": true
+      },
+      "extensions": [
+        "ms-python.python",
+        "ms-toolsai.jupyter",
+        "esbenp.prettier-vscode",
+        "njpwerner.autodocstring",
+        "eamodio.gitlens",
+        "ms-python.vscode-pylance",
+        "VisualStudioExptTeam.vscodeintellicode",
+        "exiasr.hadolint",
+        "tamasfe.even-better-toml",
+        "usernamehw.errorlens",
+        "charliermarsh.ruff",
+        "GitHub.copilot",
+        "GitHub.vscode-github-actions"
+      ]
+    }
+  },
+  //   "postStartCommand": "pip install -U pip"
+  "initializeCommand": "[ ! -f .env ] && touch .env || true"
+}

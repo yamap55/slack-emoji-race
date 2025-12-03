@@ -1,0 +1,23 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    reviewers:
+      - "yamap55"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    reviewers:
+      - "yamap55"
+  - package-ecosystem: "docker"
+    directory: "/.devcontainer"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "python"
+        versions: [">=3.13.0"]
+    reviewers:
+      - "yamap55"

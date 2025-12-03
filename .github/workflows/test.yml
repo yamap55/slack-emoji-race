@@ -1,0 +1,24 @@
+name: test
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install uv
+        id: setup-uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+      - name: Set up Python
+        run: uv python install 3.13
+      - name: Install dependencies
+        run: |
+          uv sync
+      - name: Run tests
+        id: test
+        run: |
+          uv run python -m pytest

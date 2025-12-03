@@ -1,0 +1,67 @@
+name: code-check
+
+on: [push]
+
+jobs:
+  code-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install uv
+        id: setup-uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+      - name: Set up Python
+        run: uv python install 3.13
+      - name: Install dependencies
+        run: |
+          uv sync
+      - name: Set up reviewdog
+        uses: reviewdog/action-setup@v1
+      - name: Use Node.js
+        # pyrightのためにNode.jsをインストール
+        uses: actions/setup-node@v6.1.0
+        with:
+          node-version: 20.x
+      - name: Run lint check with reviewdog
+        id: lint
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          uvx ruff check 2>&1 | reviewdog \
+            -efm="%f:%l:%c: %t%*[^ ] %m" \
+            -efm="%-G%.%#" \
+            -name="uv-lint" \
+            -reporter=github-check \
+            -level=error \
+            -fail-level=error \
+            -filter-mode=nofilter
+        # 全てのチェックを行うため、失敗しても先に進ませる
+        continue-on-error: true
+      - name: Run format check with reviewdog
+        id: format
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          uvx ruff format --check 2>&1 | reviewdog \
+            -f=black \
+            -name="uv-format" \
+            -reporter=github-check \
+            -level=error \
+            -fail-level=error \
+            -filter-mode=nofilter
+      - name: Install pyright
+        run: npm install --global pyright
+      - name: Run type check
+        id: type-check
+        run: |
+          uv run pyright
+        # 全てのチェックを行うため、失敗しても先に進ませる
+        continue-on-error: true
+      - name: Finalize and fail job on check failures
+        run: |
+          if [ "${{ steps.lint.outcome }}" == "failure" ] || [ "${{ steps.format.outcome }}" == "failure" ] || [ "${{ steps.type-check.outcome }}" == "failure" ]; then
+            exit 1
+          fi
