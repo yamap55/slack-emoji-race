@@ -44,20 +44,23 @@ def test_build_dataframe() -> None:
     # 形状の確認
     assert df.shape == (2, 3)  # 2ヶ月、3種類の絵文字
 
-    # インデックスが月であることを確認
-    assert list(df.index) == ["2025-01", "2025-02"]
+    # インデックスがDatetimeIndexであることを確認
+    assert isinstance(df.index, pd.DatetimeIndex)
+    assert len(df.index) == 2
+    assert df.index[0] == pd.Timestamp("2025-01-01")
+    assert df.index[1] == pd.Timestamp("2025-02-01")
 
     # カラムが絵文字名であることを確認（ソート順）
     assert list(df.columns) == ["heart", "saikou", "thumbsup"]
 
-    # 値の確認
-    assert df.loc["2025-01", "saikou"] == 5
-    assert df.loc["2025-01", "thumbsup"] == 3
-    assert df.loc["2025-01", "heart"] == 0  # 存在しない場合は0
+    # 値の確認（DatetimeIndexでは完全な日付形式でアクセス）
+    assert df.loc["2025-01-01", "saikou"] == 5
+    assert df.loc["2025-01-01", "thumbsup"] == 3
+    assert df.loc["2025-01-01", "heart"] == 0  # 存在しない場合は0
 
-    assert df.loc["2025-02", "saikou"] == 10
-    assert df.loc["2025-02", "heart"] == 2
-    assert df.loc["2025-02", "thumbsup"] == 0  # 存在しない場合は0
+    assert df.loc["2025-02-01", "saikou"] == 10
+    assert df.loc["2025-02-01", "heart"] == 2
+    assert df.loc["2025-02-01", "thumbsup"] == 0  # 存在しない場合は0
 
 
 def test_build_dataframe_empty() -> None:
@@ -79,5 +82,5 @@ def test_build_dataframe_single_month() -> None:
     df = build_dataframe(aggregated_data)
 
     assert df.shape == (1, 1)
-    assert df.loc["2025-01", "saikou"] == 5
+    assert df.loc["2025-01-01", "saikou"] == 5
 

@@ -59,8 +59,8 @@ def build_dataframe(aggregated_data: dict[str, dict[str, int]]) -> pd.DataFrame:
 
         data.append(row)
 
-    # DataFrameを作成
-    df = pd.DataFrame(data, index=months)  # type: ignore
+    # DataFrameを作成（インデックスをDatetimeIndexに変換）
+    df = pd.DataFrame(data, index=pd.to_datetime(months))  # type: ignore
 
     return df
 
