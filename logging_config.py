@@ -37,7 +37,7 @@ LOGGING_CONFIG = {
             "handlers": ["consoleHandler", "fileHandler"],
             "propagate": True,
         },
-        "hoge": {
+        "slack_emoji_race": {
             "level": "DEBUG",
             "handlers": ["consoleHandler", "fileHandler"],
             "propagate": False,
