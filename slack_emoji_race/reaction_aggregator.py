@@ -42,6 +42,22 @@ def parse_timestamp_to_month(ts: str) -> str:
         sys.exit(1)
 
 
+def normalize_emoji_name(emoji_name: str) -> str:
+    """
+    絵文字名から肌色バリエーション（::skin-tone-X）を削除して正規化する。
+
+    Args:
+        emoji_name: 絵文字名（例: "thumbsup::skin-tone-2"）
+
+    Returns:
+        正規化された絵文字名（例: "thumbsup"）
+    """
+    # ::skin-tone- で分割して最初の部分を取得
+    if "::skin-tone-" in emoji_name:
+        return emoji_name.split("::skin-tone-")[0]
+    return emoji_name
+
+
 def extract_reactions_from_message(message: dict) -> list[dict]:
     """
     メッセージからリアクション配列を抽出する。
@@ -90,7 +106,7 @@ def count_reactions_by_month(messages: Iterator[dict]) -> dict[str, dict[str, in
             if "name" not in reaction or "count" not in reaction:
                 continue
 
-            emoji_name = reaction["name"]
+            emoji_name = normalize_emoji_name(reaction["name"])
             count = reaction["count"]
 
             if not isinstance(count, int):

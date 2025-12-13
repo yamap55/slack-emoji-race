@@ -8,6 +8,7 @@ from slack_emoji_race.reaction_aggregator import (
     aggregate_reactions,
     count_reactions_by_month,
     extract_reactions_from_message,
+    normalize_emoji_name,
     parse_timestamp_to_month,
 )
 
@@ -37,6 +38,21 @@ def test_parse_timestamp_to_month_invalid() -> None:
     """不正なタイムスタンプの場合のテスト。"""
     with pytest.raises(SystemExit):
         parse_timestamp_to_month("invalid")
+
+
+def test_normalize_emoji_name() -> None:
+    """normalize_emoji_nameのテスト。"""
+    # 肌色バリエーションあり
+    assert normalize_emoji_name("thumbsup::skin-tone-2") == "thumbsup"
+    assert normalize_emoji_name("clap::skin-tone-3") == "clap"
+    assert normalize_emoji_name("princess::skin-tone-5") == "princess"
+    
+    # 肌色バリエーションなし
+    assert normalize_emoji_name("thumbsup") == "thumbsup"
+    assert normalize_emoji_name("saikou") == "saikou"
+    
+    # カスタム絵文字（肌色バリエーションなし）
+    assert normalize_emoji_name("custom_emoji") == "custom_emoji"
 
 
 def test_extract_reactions_from_message() -> None:
@@ -113,6 +129,39 @@ def test_count_reactions_by_month() -> None:
     assert result["2025-01"]["saikou"] == 3  # 2 + 1
     assert result["2025-01"]["thumbsup"] == 1
     assert result["2025-02"]["thumbsup"] == 3
+
+
+def test_count_reactions_by_month_skin_tone_variants() -> None:
+    """肌色バリエーションが正しく統合されることを確認するテスト。"""
+    messages = [
+        {
+            "type": "message",
+            "text": "test1",
+            "ts": "1735657200.000000",  # 2025-01-01 JST
+            "reactions": [
+                {"name": "thumbsup", "users": ["U123"], "count": 2},
+                {"name": "thumbsup::skin-tone-2", "users": ["U456"], "count": 1},
+                {"name": "thumbsup::skin-tone-3", "users": ["U789"], "count": 1},
+            ],
+        },
+        {
+            "type": "message",
+            "text": "test2",
+            "ts": "1735657200.000000",  # 2025-01-01 JST
+            "reactions": [
+                {"name": "clap::skin-tone-2", "users": ["U111"], "count": 1},
+                {"name": "clap", "users": ["U222"], "count": 2},
+            ],
+        },
+    ]
+
+    result = count_reactions_by_month(iter(messages))
+
+    assert "2025-01" in result
+    # thumbsup は 2 + 1 + 1 = 4 になるはず
+    assert result["2025-01"]["thumbsup"] == 4
+    # clap は 1 + 2 = 3 になるはず
+    assert result["2025-01"]["clap"] == 3
 
 
 def test_count_reactions_by_month_no_reactions() -> None:
