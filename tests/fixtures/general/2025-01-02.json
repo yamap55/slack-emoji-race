@@ -1,0 +1,20 @@
+[
+  {
+    "type": "message",
+    "text": "another day",
+    "user": "U123456",
+    "ts": "1730572800.000000",
+    "reactions": [
+      {
+        "name": "thumbsup",
+        "users": ["U123", "U456", "U789", "U012"],
+        "count": 4
+      },
+      {
+        "name": "heart",
+        "users": ["U345"],
+        "count": 1
+      }
+    ]
+  }
+]

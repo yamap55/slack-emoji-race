@@ -1,0 +1,66 @@
+"""DataFrame構築モジュール。"""
+
+import pandas as pd
+
+
+def get_all_months(aggregated_data: dict[str, dict[str, int]]) -> list[str]:
+    """
+    集計データから全月のリストを取得し、時系列順にソートする。
+
+    Args:
+        aggregated_data: 月別集計辞書（{month: {emoji_name: count}}）
+
+    Returns:
+        月のリスト（時系列順）
+    """
+    months = list(aggregated_data.keys())
+    return sorted(months)
+
+
+def get_all_emojis(aggregated_data: dict[str, dict[str, int]]) -> set[str]:
+    """
+    集計データから全絵文字名のセットを取得する。
+
+    Args:
+        aggregated_data: 月別集計辞書（{month: {emoji_name: count}}）
+
+    Returns:
+        絵文字名のセット
+    """
+    emojis: set[str] = set()
+
+    for month_data in aggregated_data.values():
+        emojis.update(month_data.keys())
+
+    return emojis
+
+
+def build_dataframe(aggregated_data: dict[str, dict[str, int]]) -> pd.DataFrame:
+    """
+    集計辞書からpandas DataFrameを構築する。
+
+    Args:
+        aggregated_data: 月別集計辞書（{month: {emoji_name: count}}）
+
+    Returns:
+        pandas DataFrame（index: 月、columns: 絵文字名、values: カウント）
+    """
+    months = get_all_months(aggregated_data)
+    emojis = sorted(get_all_emojis(aggregated_data))
+
+    # データを構築
+    data: list[dict[str, int]] = []
+
+    for month in months:
+        row: dict[str, int] = {}
+
+        for emoji in emojis:
+            row[emoji] = aggregated_data.get(month, {}).get(emoji, 0)
+
+        data.append(row)
+
+    # DataFrameを作成
+    df = pd.DataFrame(data, index=months)  # type: ignore
+
+    return df
+
