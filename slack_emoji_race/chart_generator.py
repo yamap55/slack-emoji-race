@@ -34,9 +34,27 @@ def get_japanese_font_path() -> Path:
     sys.exit(1)
 
 
-def configure_chart_params() -> dict:
+def get_chart_title(cumulative: bool) -> str:
+    """
+    チャートタイトルを取得する。
+
+    Args:
+        cumulative: 累計モードの場合True
+
+    Returns:
+        チャートタイトル文字列
+    """
+    if cumulative:
+        return "Slack Emoji Reactions (Cumulative)"
+    return "Slack Emoji Reactions per Month"
+
+
+def configure_chart_params(cumulative: bool = False) -> dict:
     """
     bar_chart_raceのパラメータ設定を返す。
+
+    Args:
+        cumulative: 累計モードの場合True
 
     Returns:
         パラメータの辞書
@@ -48,7 +66,7 @@ def configure_chart_params() -> dict:
     return {
         "n_bars": 20,
         "orientation": "h",
-        "title": "Slack Emoji Reactions per Month",
+        "title": get_chart_title(cumulative),
         "bar_size": 0.95,
         "period_length": 500,
         "steps_per_period": 10,
@@ -88,13 +106,14 @@ def configure_fonts() -> None:
     plt.rcParams["axes.unicode_minus"] = False
 
 
-def generate_gif(df: pd.DataFrame, output_path: Path) -> None:
+def generate_gif(df: pd.DataFrame, output_path: Path, cumulative: bool = False) -> None:
     """
     Bar Chart RaceのGIFを生成する。
 
     Args:
         df: 集計済みのpandas DataFrame（index: 月、columns: 絵文字名）
         output_path: 出力GIFファイルのパス
+        cumulative: 累計モードの場合True
 
     Raises:
         SystemExit: GIF生成に失敗した場合
@@ -106,7 +125,7 @@ def generate_gif(df: pd.DataFrame, output_path: Path) -> None:
     # フォント設定を適用
     configure_fonts()
 
-    params = configure_chart_params()
+    params = configure_chart_params(cumulative)
 
     try:
         bcr.bar_chart_race(

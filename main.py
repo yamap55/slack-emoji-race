@@ -6,7 +6,10 @@ from pathlib import Path
 
 from logging_config import setup_logging
 from slack_emoji_race.chart_generator import generate_gif
-from slack_emoji_race.dataframe_builder import build_dataframe
+from slack_emoji_race.dataframe_builder import (
+    build_cumulative_dataframe,
+    build_dataframe,
+)
 from slack_emoji_race.reaction_aggregator import aggregate_reactions
 
 setup_logging()
@@ -36,6 +39,11 @@ def parse_args() -> argparse.Namespace:
         default=DEFAULT_OUTPUT_FILENAME,
         help=f"出力GIFファイル名（デフォルト: {DEFAULT_OUTPUT_FILENAME}）",
     )
+    parser.add_argument(
+        "--cumulative",
+        action="store_true",
+        help="累計集計を使用する（デフォルト: 月別集計）",
+    )
 
     return parser.parse_args()
 
@@ -62,11 +70,14 @@ def main() -> None:
         print("Error in main: No reactions found in export data", file=sys.stderr)
         sys.exit(1)
 
-    # DataFrameを構築
-    df = build_dataframe(aggregated_data)
+    # DataFrameを構築（累計モードに応じて関数を選択）
+    if args.cumulative:
+        df = build_cumulative_dataframe(aggregated_data)
+    else:
+        df = build_dataframe(aggregated_data)
 
     # GIFを生成
-    generate_gif(df, output_path)
+    generate_gif(df, output_path, cumulative=args.cumulative)
 
     print(f"Bar Chart Race GIF generated: {output_path}")
 
