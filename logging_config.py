@@ -3,6 +3,7 @@
 import logging
 import logging.config
 import sys
+import warnings
 
 LOGGING_CONFIG = {
     "version": 1,
@@ -33,12 +34,22 @@ LOGGING_CONFIG = {
     },
     "loggers": {
         "": {  # root logger
-            "level": "DEBUG",
+            "level": "INFO",
             "handlers": ["consoleHandler", "fileHandler"],
             "propagate": True,
         },
         "slack_emoji_race": {
             "level": "DEBUG",
+            "handlers": ["consoleHandler", "fileHandler"],
+            "propagate": False,
+        },
+        "bar_chart_race": {
+            "level": "WARNING",
+            "handlers": ["consoleHandler", "fileHandler"],
+            "propagate": False,
+        },
+        "matplotlib": {
+            "level": "WARNING",
             "handlers": ["consoleHandler", "fileHandler"],
             "propagate": False,
         },
@@ -49,3 +60,5 @@ LOGGING_CONFIG = {
 def setup_logging():
     """ロギング設定を初期化する。"""
     logging.config.dictConfig(LOGGING_CONFIG)
+    warnings.filterwarnings("ignore", category=UserWarning, module="bar_chart_race")
+    warnings.filterwarnings("ignore", category=UserWarning, module="matplotlib")

@@ -36,7 +36,7 @@ RUN wget --progress=dot:giga https://raw.githubusercontent.com/git/git/master/co
 RUN rm -rf /var/lib/apt/lists/* \
     && apt-get update \
     && apt-get upgrade -y \
-    && apt-get -y --no-install-recommends install sudo vim tzdata less jq \
+    && apt-get -y --no-install-recommends install sudo vim tzdata less jq fonts-noto-cjk fonts-noto-cjk-extra \
     && apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*

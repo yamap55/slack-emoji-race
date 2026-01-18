@@ -81,7 +81,9 @@ Slack ワークスペースの標準エクスポートを入力として、「�
 
 - タイムゾーン: UTC として扱います
 - 集計単位: 月別（`YYYY-MM`）
-- 集計ロジック: 月ごとに 0 リセット（当該月の使用回数のみ）
+- 集計ロジック:
+  - **デフォルト（月別集計）**: 月ごとに 0 リセット（当該月の使用回数のみ）
+  - **累計集計モード（`--cumulative`）**: 過去からの累計使用回数を表示
 
 ### ランキング
 
@@ -128,10 +130,38 @@ Slack ワークスペースの標準エクスポートを入力として、「�
 uv run python main.py /path/to/slack/export
 ```
 
+### 起動オプション
+
+#### 必須引数
+
+- `export_dir`: Slack エクスポートを展開したディレクトリのパス
+
+#### オプション引数
+
+- `-o, --output <ファイル名>`: 出力 GIF ファイル名を指定（デフォルト: `slack_emoji_reactions_barchart_race.gif`）
+- `--cumulative`: 累計集計モードを使用（デフォルト: 月別集計。各月で 0 リセット）
+
+### 使用例
+
+```bash
+# 基本的な実行（デフォルトの出力ファイル名を使用）
+uv run python main.py /path/to/slack/export
+
+# 出力ファイル名を指定
+uv run python main.py /path/to/slack/export -o my_output.gif
+
+# 累計集計モードで実行
+uv run python main.py /path/to/slack/export --cumulative
+
+# 出力ファイル名を指定して累計集計モードで実行
+uv run python main.py /path/to/slack/export -o cumulative_race.gif --cumulative
+```
+
 ## NOTE
 
 - 実行
-  - `uv run main.py`
+  - `uv run python main.py <export_dir> [オプション]`
+  - 例: `uv run python main.py /path/to/slack/export`
 - ユニットテスト
   - `uv run python -m pytest`
     - `uvx pytest` の設定もしているが、uv 環境で実装されないため、上記コマンドで実行する

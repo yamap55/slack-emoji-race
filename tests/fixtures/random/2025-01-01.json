@@ -1,0 +1,20 @@
+[
+  {
+    "type": "message",
+    "text": "random channel message",
+    "user": "U999999",
+    "ts": "1730486700.000000",
+    "reactions": [
+      {
+        "name": "saikou",
+        "users": ["U111"],
+        "count": 1
+      },
+      {
+        "name": "fire",
+        "users": ["U222", "U333"],
+        "count": 2
+      }
+    ]
+  }
+]
