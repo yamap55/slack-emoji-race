@@ -21,7 +21,7 @@ applyTo: "**"
 
 ## Code Quality Requirements
 
-- Use Python 3.14.
+- Use Python 3.11.
 - Use Ruff for linting your code.
 - Use Ruff for formatting your code.
 - Use double quotes for strings.
