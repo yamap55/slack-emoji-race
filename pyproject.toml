@@ -8,8 +8,13 @@ authors = [
 license = { file = "LICENSE" }
 readme = "README.md"
 
-requires-python = ">=3.14"
-dependencies = ["pandas>=2.0.0", "bar-chart-race>=0.1.0", "matplotlib>=3.7.0"]
+requires-python = "==3.11.14"
+dependencies = [
+    "pandas>=2.0.0",
+    "bar-chart-race @ git+https://github.com/andresberejnoi/bar_chart_race.git@image_labels",
+    "matplotlib>=3.7.0",
+    "pillow>=8.0.0,<10.0.0",                                                                  # 画像処理に必要（Image.ANTIALIASが使えるバージョン）
+]
 
 [dependency-groups]
 dev = ["ipykernel>=6.29.5", "pytest>=8.3.4", "pytest-cov>=6.0.0"]
@@ -71,6 +76,6 @@ reportUnusedClass = true
 reportUnusedFunction = true
 reportUnusedVariable = true
 reportDuplicateImport = true
-pythonVersion = "3.14"
+pythonVersion = "3.11"
 pythonPlatform = "Linux"
 ignore = ["./work"]
