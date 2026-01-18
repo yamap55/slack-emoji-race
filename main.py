@@ -44,6 +44,12 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="累計集計を使用する（デフォルト: 月別集計）",
     )
+    parser.add_argument(
+        "--img-folder",
+        type=str,
+        default=None,
+        help="画像ラベルフォルダのパス（画像ファイルは「絵文字名.拡張子」という形式で格納されている必要があります）",
+    )
 
     return parser.parse_args()
 
@@ -77,7 +83,12 @@ def main() -> None:
         df = build_dataframe(aggregated_data)
 
     # GIFを生成
-    generate_gif(df, output_path, cumulative=args.cumulative)
+    generate_gif(
+        df,
+        output_path,
+        cumulative=args.cumulative,
+        img_label_folder=args.img_folder,
+    )
 
     print(f"Bar Chart Race GIF generated: {output_path}")
 
