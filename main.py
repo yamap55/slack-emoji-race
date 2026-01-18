@@ -1,7 +1,7 @@
 """main"""
 
-from hoge.huga import Huga
 from logging_config import setup_logging
+from slack_emoji_race.huga import Huga
 
 setup_logging()
 

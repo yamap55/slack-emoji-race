@@ -1,6 +1,6 @@
 // ref. https://github.com/Microsoft/vscode-remote-try-python
 {
-  "name": "Python Repository Simple",
+  "name": "slack_emoji_race",
   // Use docker-compose.extend.yml to run a command that keeps the container running.
   "dockerComposeFile": ["./compose.yaml"],
   "service": "app",

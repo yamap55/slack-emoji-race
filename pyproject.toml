@@ -1,7 +1,7 @@
 [project]
-name = "python_repository_simple"
+name = "slack-emoji-race"
 version = "0.0.0"
-description = "python_repository_simple"
+description = "slack-emoji-race"
 authors = [
     { name = "yamap55", email = "1785817+yamap55@users.noreply.github.com" },
 ]
@@ -22,7 +22,7 @@ build-backend = "hatchling.build"
 allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/python_repository_simple"]
+packages = ["src/slack_emoji_race"]
 
 [tool.uv]
 managed = true

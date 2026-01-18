@@ -1,4 +1,4 @@
-from hoge.huga import Huga
+from slack_emoji_race.huga import Huga
 
 
 class TestHuga:
