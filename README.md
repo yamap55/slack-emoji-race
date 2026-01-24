@@ -15,6 +15,7 @@ Slack ワークスペースの標準エクスポートを入力として、「�
 - **月別集計**: 各月ごとに 0 リセットで集計（累計ではありません）
 - **全チャンネル対応**: エクスポートに含まれるすべてのチャンネルを対象
 - **標準・カスタム絵文字対応**: 両方に対応（カスタム絵文字は名前文字列として扱います）
+- **画像ラベル対応**: バーのラベルに画像を表示可能（オプション機能）
 
 ## 入力データ
 
@@ -94,12 +95,15 @@ Slack ワークスペースの標準エクスポートを入力として、「�
 
 - `pandas`: データ処理・集計
 - `bar_chart_race`: Bar Chart Race アニメーション生成
+  - **フォーク版を使用**: [andresberejnoi/bar_chart_race@image_labels](https://github.com/andresberejnoi/bar_chart_race/tree/image_labels)
+  - 画像ラベル機能をサポート
 - `matplotlib`: グラフ描画
+- `pillow`: 画像処理（画像ラベル機能で使用）
 - `ffmpeg`: 動画生成（環境依存）
 
 ## 環境詳細
 
-- Python : 3.14
+- Python : 3.11
 
 ### 事前準備
 
@@ -140,6 +144,7 @@ uv run python main.py /path/to/slack/export
 
 - `-o, --output <ファイル名>`: 出力 GIF ファイル名を指定（デフォルト: `slack_emoji_reactions_barchart_race.gif`）
 - `--cumulative`: 累計集計モードを使用（デフォルト: 月別集計。各月で 0 リセット）
+- `--img-folder <パス>`: 画像ラベルフォルダのパスを指定（画像ファイルは「絵文字名.拡張子」という形式で格納されている必要があります）
 
 ### 使用例
 
@@ -155,7 +160,58 @@ uv run python main.py /path/to/slack/export --cumulative
 
 # 出力ファイル名を指定して累計集計モードで実行
 uv run python main.py /path/to/slack/export -o cumulative_race.gif --cumulative
+
+# 画像ラベルを使用して実行
+uv run python main.py /path/to/slack/export --img-folder /work_test/images
 ```
+
+### 画像ラベル機能
+
+バーのラベルに画像を表示する機能です（オプション）。
+
+**画像ファイルの準備**:
+
+1. **画像変換スクリプトの実行**（推奨）:
+
+   ```bash
+   uv run python -m slack_emoji_race.image_converter ./work_test/emojis -o ./work_test/emojis_converted
+   ```
+
+   このスクリプトは画像フォルダ内の画像を、bar_chart_race で使用可能な形式に変換します：
+
+   - RGB/RGBA 形式の`.png`ファイルはそのままコピー
+   - その他の形式（`.gif`、`.jpg`、LA/P モードなど）は RGBA 形式の`.png`に変換
+
+2. **画像ファイルの命名規則**:
+   - 画像ファイルは「絵文字名.png」という形式で格納されている必要があります
+   - DataFrame の列名（絵文字名）とファイル名（拡張子なし）が一致している必要があります
+   - 例: `thumbsup.png`, `saikou.png`, `heart.png` など
+
+**画像フォルダの構造例**:
+
+```
+/work_test/emojis_converted/
+├── thumbsup.png
+├── saikou.png
+├── heart.png
+└── ...
+```
+
+**使用方法**:
+
+```bash
+# 画像変換スクリプトを実行
+uv run python -m slack_emoji_race.image_converter ./work_test/emojis -o ./work_test/emojis_converted
+
+# 変換済みの画像フォルダを指定してGIFを生成
+uv run python main.py ./work --img-folder=./work_test/emojis_converted
+```
+
+**注意事項**:
+
+- 画像フォルダが存在しない、またはディレクトリでない場合、警告が表示され、画像機能は無効になります（通常のテキストラベルで動作します）
+- 画像ファイルが見つからない絵文字名は警告として表示され、チャートから除外されます
+- 画像は自動的にサムネイル化されます（最大 200x200 ピクセル）
 
 ## NOTE
 
