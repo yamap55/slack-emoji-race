@@ -668,7 +668,7 @@ requires-dist = [
     { name = "bar-chart-race", git = "https://github.com/andresberejnoi/bar_chart_race.git?rev=image_labels" },
     { name = "matplotlib", specifier = ">=3.7.0" },
     { name = "pandas", specifier = ">=2.0.0" },
-    { name = "pillow", specifier = ">=8.0.0,<10.0.0" },
+    { name = "pillow", specifier = ">=8.0.0,<13.0.0" },
 ]
 
 [package.metadata.requires-dev]
