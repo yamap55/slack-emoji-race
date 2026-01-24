@@ -134,4 +134,3 @@ def build_cumulative_dataframe(aggregated_data: dict[str, dict[str, int]]) -> pd
     df = pd.DataFrame(data, index=pd.to_datetime(months))  # type: ignore
 
     return df
-

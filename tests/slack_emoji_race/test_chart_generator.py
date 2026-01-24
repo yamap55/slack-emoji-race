@@ -95,4 +95,3 @@ def test_generate_gif_empty_dataframe(tmp_path: Path) -> None:
 
     with pytest.raises(SystemExit):
         generate_gif(df, output_path)
-

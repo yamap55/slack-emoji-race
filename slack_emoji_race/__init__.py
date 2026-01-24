@@ -11,4 +11,3 @@ __all__ = [
     "generate_gif",
     "load_all_messages",
 ]
-

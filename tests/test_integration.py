@@ -27,4 +27,3 @@ def test_end_to_end(tmp_path: Path) -> None:
     # output_path = tmp_path / "test_output.gif"
     # generate_gif(df, output_path)
     # assert output_path.exists()
-

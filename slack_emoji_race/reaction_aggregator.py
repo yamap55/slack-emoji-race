@@ -133,4 +133,3 @@ def aggregate_reactions(export_dir: Path) -> dict[str, dict[str, int]]:
     """
     messages = load_all_messages(export_dir)
     return count_reactions_by_month(messages)
-

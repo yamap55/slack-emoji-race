@@ -166,7 +166,9 @@ def generate_gif(
 
             # 画像フォルダ内の全ファイル名を取得（拡張子込み）
             # stem（拡張子なし）をキーとして、実際のファイル名（拡張子込み）を値として保存
-            image_files_by_stem: dict[str, str] = {f.stem: f.name for f in img_path.iterdir() if f.is_file()}
+            image_files_by_stem: dict[str, str] = {
+                f.stem: f.name for f in img_path.iterdir() if f.is_file()
+            }
 
             for col in df.columns:
                 # 列名（絵文字名、拡張子なし）に対応するファイルを検索
@@ -209,7 +211,9 @@ def generate_gif(
                         file=sys.stderr,
                     )
                     # 画像ファイルが見つからない列を除外
-                    available_columns = [col for col in available_columns if col not in missing_png_files]
+                    available_columns = [
+                        col for col in available_columns if col not in missing_png_files
+                    ]
 
                 if not available_columns:
                     print(
@@ -228,7 +232,9 @@ def generate_gif(
                 img_label_folder = None
 
             if df.empty:
-                print("Error in generate_gif: No columns with image files remaining", file=sys.stderr)
+                print(
+                    "Error in generate_gif: No columns with image files remaining", file=sys.stderr
+                )
                 sys.exit(1)
 
     # フォント設定を適用
