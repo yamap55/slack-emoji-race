@@ -23,7 +23,7 @@ wheels = [
 [[package]]
 name = "bar-chart-race"
 version = "0.2.0"
-source = { git = "https://github.com/andresberejnoi/bar_chart_race.git?rev=image_labels#28b2de348a3e9282a6cd1a8afccbf89381a8e0cf" }
+source = { git = "https://github.com/yamap55/bar_chart_race.git?rev=5af5ba109c44cfbc9dbda13e6e5ed8fad99c9322#5af5ba109c44cfbc9dbda13e6e5ed8fad99c9322" }
 dependencies = [
     { name = "matplotlib" },
     { name = "pandas" },
@@ -665,7 +665,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "bar-chart-race", git = "https://github.com/andresberejnoi/bar_chart_race.git?rev=image_labels" },
+    { name = "bar-chart-race", git = "https://github.com/yamap55/bar_chart_race.git?rev=5af5ba109c44cfbc9dbda13e6e5ed8fad99c9322" },
     { name = "matplotlib", specifier = ">=3.7.0" },
     { name = "pandas", specifier = ">=2.0.0" },
     { name = "pillow", specifier = ">=8.0.0,<13.0.0" },

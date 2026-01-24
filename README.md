@@ -15,7 +15,7 @@ Slack ワークスペースの標準エクスポートを入力として、「�
 - **月別集計**: 各月ごとに 0 リセットで集計（累計ではありません）
 - **全チャンネル対応**: エクスポートに含まれるすべてのチャンネルを対象
 - **標準・カスタム絵文字対応**: 両方に対応（カスタム絵文字は名前文字列として扱います）
-- **画像ラベル対応**: バーのラベルに画像を表示可能（オプション機能）
+- **画像ラベル対応**: バーのラベルに画像を表示可能（オプション機能。画像がない絵文字は Slack 絵文字名でテキスト表示）
 
 ## 入力データ
 
@@ -95,8 +95,8 @@ Slack ワークスペースの標準エクスポートを入力として、「�
 
 - `pandas`: データ処理・集計
 - `bar_chart_race`: Bar Chart Race アニメーション生成
-  - **フォーク版を使用**: [andresberejnoi/bar_chart_race@image_labels](https://github.com/andresberejnoi/bar_chart_race/tree/image_labels)
-  - 画像ラベル機能をサポート
+  - **フォーク版を使用**: [yamap55/bar_chart_race@image-fallback-support](https://github.com/yamap55/bar_chart_race/tree/image-fallback-support)
+  - 画像ラベル機能とテキストフォールバック機能をサポート
 - `matplotlib`: グラフ描画
 - `pillow`: 画像処理（画像ラベル機能で使用）
 - `ffmpeg`: 動画生成（環境依存）
@@ -168,6 +168,13 @@ uv run python main.py /path/to/slack/export --img-folder /work_test/images
 ### 画像ラベル機能
 
 バーのラベルに画像を表示する機能です（オプション）。
+
+画像フォルダを指定した場合、以下のように動作します：
+
+- **画像がある絵文字**: 画像として表示
+- **画像がない絵文字**: Slack 絵文字名（例: `+1`, `thumbsup`, `saikou`）でテキスト表示
+
+すべての絵文字に画像を用意する必要はありません。画像がない絵文字は自動的にテキストラベルとして表示されます。
 
 **画像ファイルの準備**:
 

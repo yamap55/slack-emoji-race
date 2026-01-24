@@ -88,7 +88,8 @@ def configure_chart_params(
             img_path = img_path.resolve()
         if img_path.exists() and img_path.is_dir():
             params["img_label_folder"] = str(img_path)
-            params["tick_label_mode"] = "image"  # 'image', 'mixed', またはデフォルトのテキスト
+            # 画像モード（画像がない場合は自動的にテキスト表示）
+            params["tick_label_mode"] = "image"
             params["tick_image_mode"] = "trailing"  # 画像がバーと一緒に移動するモード
         else:
             print(
@@ -102,6 +103,7 @@ def configure_chart_params(
 def configure_fonts() -> None:
     """
     matplotlibのフォント設定を構成する。
+
     文字化けを防ぐため、日本語フォントを登録して設定する。
     """
     font_path = get_japanese_font_path()
@@ -136,12 +138,18 @@ def generate_gif(
     """
     Bar Chart RaceのGIFを生成する。
 
+    画像フォルダ指定時：
+    - 画像がある絵文字 → 画像で表示
+    - 画像がない絵文字 → Slack絵文字名でテキスト表示（例: +1, thumbsup）
+
+    画像フォルダなし：すべての絵文字をSlack絵文字名でテキスト表示
+
     Args:
         df: 集計済みのpandas DataFrame（index: 月、columns: 絵文字名）
         output_path: 出力GIFファイルのパス
         cumulative: 累計モードの場合True
-        img_label_folder: 画像ラベルフォルダのパス（Noneの場合は画像を使用しない）
-                         画像ファイルは「絵文字名.拡張子」という形式で格納されている必要があります
+        img_label_folder: 画像ラベルフォルダのパス（Noneの場合はテキスト表示）
+                         画像ファイルは「絵文字名.png」という形式で格納されている必要があります
 
     Raises:
         SystemExit: GIF生成に失敗した場合
@@ -150,7 +158,7 @@ def generate_gif(
         print("Error in generate_gif: DataFrame is empty", file=sys.stderr)
         sys.exit(1)
 
-    # 画像フォルダが指定されている場合、画像ファイルが存在する列のみを残す
+    # 画像フォルダが指定されている場合、画像の有無を確認して統計情報を出力
     if img_label_folder is not None:
         img_path = Path(img_label_folder)
         # 相対パスの場合は絶対パスに変換
@@ -158,84 +166,43 @@ def generate_gif(
             img_path = img_path.resolve()
 
         if img_path.exists() and img_path.is_dir():
-            # 画像ファイルが存在する列をフィルタリング
-            # フォーク版のget_image_name関数は拡張子がない場合に.pngを追加するため、
-            # 事前にimage_converter.pyで変換済みの.pngファイルが存在することを前提とする
-            available_columns = []
-            missing_images = []
-
-            # 画像フォルダ内の全ファイル名を取得（拡張子込み）
-            # stem（拡張子なし）をキーとして、実際のファイル名（拡張子込み）を値として保存
-            image_files_by_stem: dict[str, str] = {
-                f.stem: f.name for f in img_path.iterdir() if f.is_file()
+            # 画像フォルダ内の全ファイル名を取得（拡張子なし）
+            image_files_by_stem: set[str] = {
+                f.stem for f in img_path.iterdir() if f.is_file() and f.suffix == ".png"
             }
 
+            images_found = []
+            images_missing = []
+
             for col in df.columns:
-                # 列名（絵文字名、拡張子なし）に対応するファイルを検索
                 if col in image_files_by_stem:
-                    available_columns.append(col)
+                    images_found.append(col)
                 else:
-                    missing_images.append(col)
+                    images_missing.append(col)
 
-            if missing_images:
+            # 統計情報を出力
+            if images_found:
                 print(
-                    f"Warning: Image files not found for {len(missing_images)} emojis: {', '.join(missing_images[:10])}{'...' if len(missing_images) > 10 else ''}",
-                    file=sys.stderr,
-                )
-                print(
-                    f"These emojis will be excluded from the chart.",
+                    f"Info: {len(images_found)} emojis will be displayed as images",
                     file=sys.stderr,
                 )
 
-            if available_columns:
-                # フォーク版のget_image_name関数は拡張子がない場合に.pngを追加するため、
-                # 実際のファイル名に対応する.pngファイルが存在することを確認
-                # （事前にimage_converter.pyで変換済みであることを想定）
-                missing_png_files = []
-
-                for col in available_columns:
-                    png_filename = f"{col}.png"
-                    png_file_path = img_path / png_filename
-
-                    if not png_file_path.exists():
-                        missing_png_files.append(col)
-
-                if missing_png_files:
-                    print(
-                        f"Warning: PNG files not found for {len(missing_png_files)} emojis. "
-                        f"Please run image_converter.py first to convert images.",
-                        file=sys.stderr,
-                    )
-                    print(
-                        f"Missing files: {', '.join(missing_png_files[:10])}{'...' if len(missing_png_files) > 10 else ''}",
-                        file=sys.stderr,
-                    )
-                    # 画像ファイルが見つからない列を除外
-                    available_columns = [
-                        col for col in available_columns if col not in missing_png_files
-                    ]
-
-                if not available_columns:
-                    print(
-                        "Error: No PNG files found. Please run image_converter.py first.",
-                        file=sys.stderr,
-                    )
-                    sys.exit(1)
-
-                df_filtered = df[available_columns]
-                df = df_filtered  # type: ignore[assignment]
-            else:
+            if images_missing:
                 print(
-                    "Warning: No image files found. Disabling image label feature.",
+                    f"Info: {len(images_missing)} emojis will be displayed as text: "
+                    f"{', '.join(images_missing[:10])}{'...' if len(images_missing) > 10 else ''}",
                     file=sys.stderr,
                 )
-                img_label_folder = None
-
-            if df.empty:
-                print(
-                    "Error in generate_gif: No columns with image files remaining", file=sys.stderr
-                )
-                sys.exit(1)
+        else:
+            print(
+                f"Warning: Image folder does not exist or is not a directory: {img_path}",
+                file=sys.stderr,
+            )
+    else:
+        print(
+            f"Info: All {len(df.columns)} emojis will be displayed as text",
+            file=sys.stderr,
+        )
 
     # フォント設定を適用
     configure_fonts()
