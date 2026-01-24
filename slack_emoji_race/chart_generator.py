@@ -76,7 +76,7 @@ def configure_chart_params(
         "interpolate_period": True,
         "bar_label_font": 7,  # フォーク版では bar_label_font を使用
         "tick_label_font": 7,  # フォーク版では tick_label_font を使用
-        "period_label": {"x": 0.99, "y": 0.99, "ha": "right", "va": "top"},
+        "period_label": {"x": 0.99, "y": 0.15, "ha": "right", "va": "bottom"},
         "shared_fontdict": {"family": font_family},
     }
 
