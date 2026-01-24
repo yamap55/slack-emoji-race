@@ -137,4 +137,3 @@ def test_build_cumulative_dataframe_single_month() -> None:
 
     assert df.shape == (1, 1)
     assert df.loc["2025-01-01", "saikou"] == 5
-

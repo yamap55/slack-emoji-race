@@ -46,11 +46,11 @@ def test_normalize_emoji_name() -> None:
     assert normalize_emoji_name("thumbsup::skin-tone-2") == "thumbsup"
     assert normalize_emoji_name("clap::skin-tone-3") == "clap"
     assert normalize_emoji_name("princess::skin-tone-5") == "princess"
-    
+
     # 肌色バリエーションなし
     assert normalize_emoji_name("thumbsup") == "thumbsup"
     assert normalize_emoji_name("saikou") == "saikou"
-    
+
     # カスタム絵文字（肌色バリエーションなし）
     assert normalize_emoji_name("custom_emoji") == "custom_emoji"
 
@@ -205,4 +205,3 @@ def test_aggregate_reactions() -> None:
     # fixtureには2025-01のデータがあるはず
     if "2025-01" in result:
         assert isinstance(result["2025-01"], dict)
-

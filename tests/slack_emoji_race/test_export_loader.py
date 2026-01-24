@@ -98,4 +98,3 @@ def test_load_all_messages(tmp_path: Path) -> None:
     first_message = messages[0]
     assert "type" in first_message
     assert "ts" in first_message
-

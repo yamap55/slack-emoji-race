@@ -115,4 +115,3 @@ def load_all_messages(export_dir: Path) -> Iterator[dict]:
         for json_file in json_files:
             messages = load_json_file(json_file)
             yield from messages
-
