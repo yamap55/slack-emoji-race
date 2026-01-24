@@ -18,6 +18,10 @@ jobs:
       - name: Install dependencies
         run: |
           uv sync
+      - name: Install Japanese fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk
       - name: Run tests
         id: test
         run: |
