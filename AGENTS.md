@@ -98,16 +98,19 @@ uvx ruff format --check
 
 ### Bar Chart Race ライブラリ
 
-- フォーク版使用: `andresberejnoi/bar_chart_race@image_labels`
-- 画像ラベル機能サポート
-- パラメータ名がオリジナルと異なる場合あり（`bar_label_font`, `tick_label_font`）
+- フォーク版使用: `yamap55/bar_chart_race@image-fallback-support`
+- 画像ラベル機能とテキストフォールバック機能をサポート
+- 画像がない絵文字は自動的にテキストラベルとして表示される
 
 ### 画像ラベル機能
 
+- **表示モード**: `tick_label_mode = "image"`（画像があれば画像、なければテキスト）
 - 画像ファイル形式: **RGBA 形式の PNG**
-- ファイル命名規則: `絵文字名.png`（拡張子なしの絵文字名が DataFrame 列名と一致）
-- 事前に `image_converter.py` で変換必須
-- 画像未発見の絵文字は自動除外（警告表示）
+- ファイル命名規則: `絵文字名.png`（Slack 絵文字名と一致）
+- 事前に `image_converter.py` で変換推奨
+- **画像がない絵文字の処理**:
+  - Slack 絵文字名（例: `+1`, `thumbsup`, `saikou`）をそのままテキスト表示
+- すべての絵文字がチャートに表示される（除外なし）
 
 ### エラーハンドリング
 
@@ -149,4 +152,6 @@ uv run python -m slack_emoji_race.image_converter ./input_images -o ./converted_
 uv run python main.py ./export --img-folder ./converted_images
 
 # 3. ログで画像検出状況を確認
+# "Info: X emojis will be displayed as images" - 画像表示される絵文字
+# "Info: Y emojis will be displayed as text" - テキスト表示される絵文字
 ```
