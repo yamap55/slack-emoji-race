@@ -10,7 +10,7 @@ readme = "README.md"
 
 requires-python = "==3.11.14"
 dependencies = [
-    "pandas>=2.0.0",
+    "pandas>=3.0.2",
     "bar-chart-race @ git+https://github.com/yamap55/bar_chart_race.git@5af5ba109c44cfbc9dbda13e6e5ed8fad99c9322",
     "matplotlib>=3.7.0",
     "pillow>=12.2.0,<13.0.0",  # 画像処理に必要（Image.ANTIALIASが使えるバージョン）
